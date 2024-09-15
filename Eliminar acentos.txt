@@ -1,0 +1,31 @@
+(texto as text) as text =>
+let
+
+    // Variables que se van a reemplazar.
+    acentos_a_eliminar = {"á", "é", "í", "ó", "ú", "Á", "É", "Í", "Ó", "Ú", "Ñ", "ñ"},
+
+    // variables por las que se van a reemplazar.
+    sin_acentos = {"a", "e", "i", "o", "u", "A", "E", "I", "O", "U", "N", "n"},
+
+    // reemplazmos los saltos de linea por espacios
+    eliminar_saltos_linea = Text.Replace(texto, Character.FromNumber(10), Character.FromNumber(32)),
+    
+    // ahora separamos el texto por espacios " "
+    separar_por_espacios = Text.Split(eliminar_saltos_linea, " "),
+
+
+    // Ahora aplicamos la eliminamos los espacios en blanco en cada palabra seleccionada
+    eliminar_espacios_por_palabra = List.Transform(separar_por_espacios, each Text.Trim(_)),
+
+    // Ahora seleccionamos los datos que no solo un espacio en blanco
+    datos_sin_espacios = List.Select(eliminar_espacios_por_palabra, each _ <> ""),
+
+    // Concatenamos cada uno de las palabras.
+    texto_sin_espacios = Text.Combine(datos_sin_espacios, " "),
+
+    // Hacemos una iteracion para recorrer y cambiar los carcateres con acentos.
+    texto_limpio = List.Accumulate({0..List.Count(acentos_a_eliminar) - 1}, texto_sin_espacios, (state, current) => Replacer.ReplaceText(state, acentos_a_eliminar{current}, sin_acentos{current}))
+    
+in
+
+    texto_limpio
