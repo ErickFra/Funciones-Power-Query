@@ -1,0 +1,13 @@
+// Funcion para obtener la fecha de nacimiento de una persona con el RFC.
+
+(RFC as text) as date =>
+let
+  year = Text.Middle(RFC, 4, 2),
+  month = Text.Middle(RFC, 6, 2),
+  day = Text.Middle(RFC, 8, 2),
+
+  full_year = if Number.FromText(year) >= 0 and Number.FromText(year) <= Date.Year(DateTime.LocalNow()) then "20" & year else "19" & year,
+
+  birthday = #date(Number.FromText(full_year), Number.FromText(month), Number.FromText(day))
+in
+  birthday
